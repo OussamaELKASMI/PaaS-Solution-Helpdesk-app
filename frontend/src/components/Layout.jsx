@@ -16,7 +16,7 @@ export default function Layout() {
           <div className="brand-mark">MH</div>
           <div>
             <h1>Mini Helpdesk</h1>
-            <p>Cloud PaaS MVP - Build 2</p>
+            <p>Cloud PaaS MVP - Build 3</p>
           </div>
         </div>
 
