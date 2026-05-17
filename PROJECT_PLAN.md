@@ -1,20 +1,22 @@
-# Mini Helpdesk Platform on Azure
+# Mini Helpdesk Platform
 
-## Project Scope
+## Project Overview
 
 ### Title
-**Mini Helpdesk Platform for Managing Support Tickets on Azure**
+**Mini Helpdesk Platform for Managing Support Tickets**
 
 ### Short Description
-We will build an open-source mini helpdesk platform that allows users to create, track, and manage support tickets online. The application will be deployed on Microsoft Azure using a PaaS architecture with managed services for compute, database, storage, and monitoring. The solution will be delivered as an all-in-one cloud platform including the frontend, backend API, database, attachment storage, and deployment pipeline.
+This project is an open-source cloud helpdesk platform that allows users to create, track, and manage support tickets online. It is built with React, FastAPI, PostgreSQL, and Docker, then deployed as a PaaS-based web application using Netlify for the frontend and Render for the backend and database.
 
 ### Objective
-Create a small but complete support system where users can submit issues and support agents can manage them efficiently.
+Create a complete but lightweight support system where users can submit issues, support staff can manage workflows, and admins can supervise the platform.
+
+## Scope
 
 ### Roles
-- `User`: creates tickets, views own tickets, adds comments
-- `Support Agent`: views assigned tickets, updates status and priority, adds comments
-- `Admin`: manages users, sees all tickets, views statistics
+- `User`: creates tickets, views ticket details, adds comments, uploads attachments
+- `Support Agent`: manages assigned tickets, updates status and priority, adds comments
+- `Admin`: manages users, promotes roles, sees all tickets, views platform statistics
 
 ### Admin Account Setup
 - public registration creates normal `user` accounts only
@@ -28,9 +30,11 @@ Create a small but complete support system where users can submit issues and sup
 - view ticket details
 - update ticket status
 - update ticket priority
+- assign tickets to staff
 - add comments
 - upload attachments
 - admin dashboard with simple statistics
+- role promotion for users
 
 ### Out of Scope for MVP
 - live chat
@@ -39,50 +43,53 @@ Create a small but complete support system where users can submit issues and sup
 - advanced analytics
 - mobile app
 
-## Recommended Stack
+## Technical Stack
 
-- `Frontend`: React
+- `Frontend`: React + Vite
 - `Backend`: FastAPI
 - `Database`: PostgreSQL
+- `Authentication`: JWT-based login
 - `Local development`: Docker Compose
-- `Cloud model`: Azure PaaS
+- `Version control`: GitHub
+- `Cloud model`: PaaS
 
-## Architecture
+## Final Hosted Architecture
 
-### Azure Services
-- `Azure Container Apps`: host frontend and backend
-- `Azure Database for PostgreSQL Flexible Server`: relational database
-- `Azure Blob Storage`: ticket attachments
-- `Azure Key Vault`: secrets
-- `Azure Container Registry`: Docker images
-- `Azure Monitor / Log Analytics`: logs and monitoring
+### Deployment Services
+- `Frontend hosting`: Netlify
+- `Backend hosting`: Render Web Service
+- `Database hosting`: Render Postgres
+- `Source control`: GitHub
 
 ```mermaid
 flowchart LR
-    U["User / Support Agent / Admin"] --> FE["React Frontend<br/>Azure Container Apps"]
-    FE --> API["FastAPI Backend<br/>Azure Container Apps"]
-    API --> DB["Azure Database for PostgreSQL"]
-    API --> BLB["Azure Blob Storage<br/>Attachments"]
-    API --> KV["Azure Key Vault<br/>Secrets"]
-    FE --> MON["Azure Monitor / Log Analytics"]
-    API --> MON
-    GH["GitHub Actions"] --> ACR["Azure Container Registry"]
-    ACR --> FE
-    ACR --> API
+    U["User / Support Agent / Admin"] --> FE["React Frontend<br/>Netlify"]
+    FE --> API["FastAPI Backend<br/>Render Web Service"]
+    API --> DB["PostgreSQL<br/>Render Postgres"]
+    API --> FS["Attachment Storage<br/>Backend Service Filesystem"]
+    GH["GitHub Repository"] --> FE
+    GH --> API
 ```
 
 ### Request Flow
-1. The user opens the frontend.
-2. The frontend sends requests to the backend API.
-3. The backend stores ticket data in PostgreSQL.
-4. Attachments are uploaded to Blob Storage.
-5. Secrets such as database connection strings are stored in Key Vault.
-6. Logs and metrics are collected in Azure Monitor.
-7. GitHub Actions builds and deploys containers to Azure.
+1. The user opens the frontend hosted on Netlify.
+2. The frontend sends API requests to the FastAPI backend hosted on Render.
+3. The backend stores users, tickets, comments, and attachment metadata in PostgreSQL.
+4. Uploaded attachment files are stored on the backend service for the MVP demo.
+5. GitHub is used as the deployment source for both frontend and backend.
+
+## Why This Counts as PaaS
+
+- the application is deployed on managed hosting platforms rather than self-managed virtual machines
+- the frontend is hosted on Netlify, which manages the web hosting layer
+- the backend is hosted on Render, which manages the application runtime and deployment environment
+- the database is hosted on Render Postgres, which manages the PostgreSQL service
+
+So the project is a **cloud PaaS solution** built with an **open-source stack**.
 
 ## Database Schema
 
-PostgreSQL will use UUID primary keys.
+PostgreSQL uses UUID-style identifiers stored as strings in the application models.
 
 ### `users`
 ```sql
@@ -144,122 +151,62 @@ CREATE TABLE attachments (
 - one `ticket` can have many `comments`
 - one `ticket` can have many `attachments`
 
-### Simple Schema View
-```text
-users
-  id PK
-  role: user | agent | admin
+## Current Project Status
 
-tickets
-  id PK
-  created_by FK -> users.id
-  assigned_to FK -> users.id
+### Implemented
+- registration and login
+- JWT authentication
+- role-based access control
+- admin bootstrap via seed script
+- ticket creation and listing
+- ticket detail page
+- status and priority updates
+- ticket assignment to staff
+- comments
+- attachment uploads
+- admin statistics
+- user role promotion
+- local Docker environment
+- hosted deployment on Netlify and Render
 
-comments
-  id PK
-  ticket_id FK -> tickets.id
-  user_id FK -> users.id
+### Deployed Endpoints
+- `Frontend`: `https://mini-helpdesk-frontend.netlify.app`
+- `Backend`: `https://mini-helpdesk-backend-bpm2.onrender.com/api/v1/health`
 
-attachments
-  id PK
-  ticket_id FK -> tickets.id
-  uploaded_by FK -> users.id
+## Local Development
+
+Run the full local stack with:
+
+```powershell
+docker compose up --build -d
 ```
 
-## Next Steps
-
-### Phase 1: Project Setup
-1. Create the project structure:
-   - `frontend/`
-   - `backend/`
-   - `docs/` if needed later
-2. Initialize the frontend with React.
-3. Initialize the backend with FastAPI.
-4. Add a local PostgreSQL service with Docker Compose.
-5. Add environment files for local configuration.
-
-### Phase 2: Backend Development
-1. Configure the FastAPI project.
-2. Connect the backend to PostgreSQL.
-3. Create the `users`, `tickets`, `comments`, and `attachments` tables.
-4. Implement authentication.
-5. Implement ticket CRUD endpoints.
-6. Implement comment endpoints.
-7. Implement attachment metadata handling.
-8. Add filtering by ticket status and priority.
-9. Add a basic admin statistics endpoint.
-
-### Phase 3: Frontend Development
-1. Build the login page.
-2. Build the ticket list page.
-3. Build the ticket details page.
-4. Build the create ticket form.
-5. Build ticket filters.
-6. Build the comment section.
-7. Build the admin dashboard.
-
-### Phase 4: Local Integration
-1. Connect the React frontend to the FastAPI backend.
-2. Test login, ticket creation, status updates, comments, and local file attachments.
-3. Verify database persistence.
-4. Clean up validation and error messages.
-
-### Phase 5: Containerization
-1. Add a `Dockerfile` for the frontend.
-2. Add a `Dockerfile` for the backend.
-3. Add a `docker-compose.yml` for local full-stack execution.
-4. Verify the app runs correctly in containers.
-
-### Phase 6: Azure Deployment
-1. Create an Azure Resource Group.
-2. Create Azure Container Registry.
-3. Create Azure Container Apps for frontend and backend.
-4. Create Azure Database for PostgreSQL Flexible Server.
-5. Create Blob Storage for attachments.
-6. Create Key Vault for secrets.
-7. Create Log Analytics and Azure Monitor.
-8. Deploy the app and connect all services.
-
-### Phase 7: CI/CD and Finalization
-1. Add GitHub Actions for build and deployment.
-2. Push container images to Azure Container Registry.
-3. Automate deployment to Azure Container Apps.
-4. Add monitoring and at least one alert.
-5. Prepare screenshots and demo accounts.
-6. Finalize README and presentation.
-
-## Immediate Action Items
-
-These are the best next tasks to start with:
-
-1. Create the `backend` project and set up the database connection.
-2. Create the `users` table and authentication flow.
-3. Implement ticket creation and listing.
-4. Create the `frontend` project with the first pages:
-   - login
-   - ticket list
-   - ticket details
-5. Add Docker Compose for local development.
+Local URLs:
+- `Frontend`: `http://localhost:5173`
+- `Backend`: `http://localhost:8000`
+- `Health`: `http://localhost:8000/api/v1/health`
 
 ## Local Admin Bootstrap
 
-Create or promote an admin account with:
+Create or promote an admin account locally with:
 
 ```powershell
 docker compose exec backend python scripts/seed_admin.py --email your-admin@example.com --password YourStrongPassword123 --full-name "Your Name"
 ```
 
-If you are not using Docker and you run the backend from Python directly, use:
+## Hosted Admin Bootstrap
+
+The hosted environment was initialized by connecting to the Render Postgres database and running:
 
 ```powershell
-python backend/scripts/seed_admin.py --email your-admin@example.com --password YourStrongPassword123 --full-name "Your Name"
+docker compose run --rm --no-deps -e DATABASE_URL="postgresql+psycopg://..." backend python scripts/seed_admin.py --email your-admin@example.com --password YourStrongPassword123 --full-name "Your Name"
 ```
+
+This creates the first admin account without exposing admin creation in the public UI.
 
 ## Database Inspection
 
-If you already have PostgreSQL installed locally, the Docker helpdesk database is exposed on host port `5433` to avoid conflicts with your local PostgreSQL server on `5432`.
-
-Use these pgAdmin connection settings for the app database:
+For local pgAdmin access, connect to the Docker database with:
 
 - host: `localhost`
 - port: `5433`
@@ -267,14 +214,23 @@ Use these pgAdmin connection settings for the app database:
 - username: `helpdesk`
 - password: `helpdesk`
 
-## Local Attachment Storage
+## Attachment Storage Note
 
-- During local development, attachments are uploaded from the ticket details page and stored in the backend container's `uploads/` directory.
-- The backend serves those files at `/uploads/...`.
-- For the Azure deployment phase, this local storage flow can be replaced with Azure Blob Storage while keeping the attachment records in PostgreSQL.
+- In the current MVP, attachment files are stored on the backend service filesystem.
+- Attachment metadata is still stored in PostgreSQL.
+- For a stronger production design, the next step would be moving files to dedicated object storage while keeping metadata in the database.
 
-## Notes
+## Presentation Notes
 
-- This project is a **PaaS-based cloud solution** because it uses managed Azure services for the application runtime, database, storage, and monitoring.
-- The stack is based on open-source technologies: React, FastAPI, PostgreSQL, Docker, and GitHub Actions.
-- Azure deployment should happen after the local MVP is working, especially if subscription credits are limited.
+### Strong Points to Highlight
+- open-source stack
+- complete cloud-hosted solution
+- PaaS deployment model
+- role-based ticket workflow
+- admin management
+- database-backed persistence
+- working hosted demo
+- Git-based automatic redeployment
+
+### Limitation to Mention Honestly
+- attachment storage is suitable for the MVP demo but should move to dedicated object storage in a production-grade version

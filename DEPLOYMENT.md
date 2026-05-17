@@ -77,7 +77,7 @@ That means:
 - it is **not persistent** on many cloud platforms
 - for the presentation, do not rely heavily on attachments in the hosted demo unless you test them
 
-If needed, present attachments as working in the local MVP and explain that the production cloud version should use object storage such as Azure Blob Storage.
+If needed, present attachments as working in the MVP and explain that the production cloud version should use dedicated object storage.
 
 ## 4. Deploy Frontend on Netlify
 
@@ -87,7 +87,7 @@ Use these settings:
 
 - `Base directory`: `frontend`
 - `Build command`: `npm run build`
-- `Publish directory`: `frontend/dist`
+- `Publish directory`: `dist`
 
 ### Frontend Environment Variable
 
@@ -96,6 +96,20 @@ Set:
 - `VITE_API_BASE_URL=https://your-render-backend-url/api/v1`
 
 Then trigger the deploy.
+
+### Netlify SPA Routing
+
+This project uses React Router, so Netlify must serve `index.html` for direct route refreshes.
+
+That is handled by:
+
+- [frontend/public/_redirects](C:/Users/Lenovo/Desktop/ISMAGI/S2/EFMs/cloud-computing/frontend/public/_redirects)
+
+with:
+
+```text
+/* /index.html 200
+```
 
 ## 5. Hosted Smoke Test
 
