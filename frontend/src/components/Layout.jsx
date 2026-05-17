@@ -1,9 +1,9 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from 'react-router-dom';
 
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from '../context/AuthContext';
 
 function navClassName({ isActive }) {
-  return `nav-link${isActive ? " active" : ""}`;
+  return `nav-link${isActive ? ' active' : ''}`;
 }
 
 export default function Layout() {
@@ -16,7 +16,7 @@ export default function Layout() {
           <div className="brand-mark">MH</div>
           <div>
             <h1>Mini Helpdesk</h1>
-            <p>Cloud PaaS MVP</p>
+            <p>Cloud PaaS MVP - Build 2</p>
           </div>
         </div>
 
@@ -27,7 +27,7 @@ export default function Layout() {
           <NavLink to="/tickets/new" className={navClassName}>
             New Ticket
           </NavLink>
-          {user?.role === "admin" ? (
+          {user?.role === 'admin' ? (
             <NavLink to="/admin" className={navClassName}>
               Admin Dashboard
             </NavLink>
