@@ -16,7 +16,7 @@ export default function Layout() {
           <div className="brand-mark">MH</div>
           <div>
             <h1>Mini Helpdesk</h1>
-            <p>Azure PaaS MVP</p>
+            <p>Cloud PaaS MVP</p>
           </div>
         </div>
 
@@ -51,4 +51,3 @@ export default function Layout() {
     </div>
   );
 }
-

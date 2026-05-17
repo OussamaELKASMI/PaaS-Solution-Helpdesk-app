@@ -306,7 +306,8 @@ export default function TicketDetailsPage() {
               />
             </label>
             <span className="field-hint">
-              Local MVP uploads are stored on the backend container now. We can swap this to Azure Blob Storage later.
+              Demo uploads are stored on the backend service for now. A production cloud version should move them to
+              dedicated object storage.
             </span>
             <button type="submit" className="primary-button" disabled={isUploadingAttachment}>
               {isUploadingAttachment ? "Uploading..." : "Upload Attachment"}

@@ -44,8 +44,8 @@ export default function LoginPage() {
           <span className="eyebrow">Cloud Computing Final Project</span>
           <h1>Mini Helpdesk Platform</h1>
           <p>
-            Start with local auth, ticket workflows, and admin stats, then move the same stack to Azure
-            Container Apps, PostgreSQL, Blob Storage, and Key Vault.
+            An open-source helpdesk solution built with React, FastAPI, and PostgreSQL, then deployed as a complete
+            cloud PaaS application with authentication, ticket workflows, file uploads, and admin reporting.
           </p>
         </div>
 
